@@ -3,7 +3,6 @@ import { useInput } from '../../sharedFunctions/sharedFunctions';
 import moment from 'moment';
 import logo from '../../../src/logo.svg';
 import GithubLogo from '../../images/github_logos/GitHub_Logo_White.png';
-import mongoLogo from '../../images/mongo_logo.png';
 import "./style.css";
 
 
@@ -13,33 +12,31 @@ const Home = () => {
     var [messages, setMessages] = useState([]);
 
     const renderMessages = () => {
-       /* API.findAllMessages().then(
-            (res) => {
-                setMessages(messages => res.data);
-            }
-        );
-        */
-    }
+        let currentMessages = localStorage.getItem("messages");
+        if (currentMessages !== null) {
+            setMessages(messages => JSON.parse(currentMessages));
+        }
+    };
 
     const saveMessage = (event) => {
+        let tempMessages = messages;
         if (newMessage !== "") {
-            /*API.createMessage(newMessage, new Date()).then(
-                (res) => {
-                    renderMessages();
-                    document.getElementById('messageInput').value = "";
-                }
-            );*/
+            tempMessages.push({
+                "date": Date(),
+                "message": newMessage
+            });
+            localStorage.setItem("messages", JSON.stringify(tempMessages));
+            document.getElementById('messageInput').value = "";
+            renderMessages();
         }
     };
 
     const deleteMessage = (event) => {
         let messageDeletionID = event.currentTarget.dataset.message_id;
-        /*API.deleteOneMessage(messageDeletionID).then(
-            (res) => {
-                renderMessages();
-            }
-        );
-        */
+        let currentMessages = messages;
+        currentMessages.splice(messageDeletionID, 1);
+        localStorage.setItem("messages", JSON.stringify(currentMessages));
+        renderMessages();
     }
 
     useEffect(() => {
@@ -50,9 +47,8 @@ const Home = () => {
         <div>
             <div className="App">
                 <header className="App-header p-4">
-                    <h1>React MongoDB Template</h1>
+                    <h1>React App Sandbox</h1>
                     <img src={logo} className="App-logo" alt="logo" />
-                    <img src={mongoLogo} className="mongo-logo" alt="mongo_logo" />
                     <p>Edit <code>src/pages/Home/Home.js</code> and save to reload.</p>
                     <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">Learn React</a>
                 </header>
@@ -78,13 +74,13 @@ const Home = () => {
                                 <div className="pt-1">
                                     <div style={{ fontStyle: "italic" }} className="mt-1 mb-1">"{message.message}"</div>
                                     <div style={{ color: "#61dafb" }} className="mb-2">{moment(message.created_date).format("DD MMMM YYYY h:mm A")}</div>
-                                    <div className="btn btn-sm btn-custom-red mb-1 mt-1" data-message_id={message._id} onClick={deleteMessage}>Delete</div>
+                                    <div className="btn btn-sm btn-custom-red mb-1 mt-1" data-message_id={i} onClick={deleteMessage}>Delete</div>
                                 </div>
                             </div>
                         )}
                     </div>
                     <div className="col-md-12 pt-3 pb-3">
-                        <a href="https://github.com/nick-ramsay/react-mongo-template" target="_blank" rel="noopener noreferrer" title="Check out this repo on GitHub!" className="github-link">
+                        <a href="https://github.com/nick-ramsay/ddrum-react-sandbox" target="_blank" rel="noopener noreferrer" title="Check out this repo on GitHub!" className="github-link">
                             <img className="github-logo" src={GithubLogo} alt="GitHub_logo" />
                         </a>
                     </div>

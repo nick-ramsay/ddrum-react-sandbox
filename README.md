@@ -1,4 +1,4 @@
-# react-barebones-template
+# ddrum-react-sandbox
 
 This a a very simple application using React and Express.
 
